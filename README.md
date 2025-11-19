@@ -6,23 +6,13 @@ Many of these snippets haven’t been touched in years and show their age. Bring
 This repository is intentionally designed for cross-project, cross-platform “dirty includes”—small, drop-in files that solve specific problems without needing a full framework.
 Because these snippets span many environments and coding styles, certain challenges are expected, and different approaches may coexist.
 
-The first structure proposal to keep things flexible and allows future expansion without breaking existing workflows:
-
-## Repository Structure
+## first structure proposal to keep things flexible and allows future expansion without breaking existing workflows
 
 - `snip/`
+  - `3rd/` - third party (vendor) items locally stored to maintain compatiblity
   - `Core/` – Core `.inc.php` files, legacy snippets, shared utilities
   - `Html/` – Output-visible components, templates, UI helpers
   - `Net/` – Network logic, API helpers, inter-service utilities
   - `Assets/` – Images, icons, and other shared static files
   - `Misc/` – Unsorted or experimental snippets pending classification
 
-
-[code]snip/
-├─ 3rd/           # third party parts to be called locally via other code (like "vendor")
-├─ Core/          # Core .inc.php files, legacy snippets, shared utilities
-├─ Html/          # Output-visible components, templates, UI helpers
-├─ Net/           # Network logic, API helpers, inter-service utilities
-├─ Assets/        # Images, icons, and other shared static files
-└─ Misc/          # Unsorted or experimental snippets pending classification
-[/code]
