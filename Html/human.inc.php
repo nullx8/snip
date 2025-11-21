@@ -1,7 +1,5 @@
 <?php
 
-// DO NOT USE THIS .. will be fixed and then placed in ../Html/
-//
 // ToDo remove Sessions and change to array style 
 /*
 like this
@@ -15,7 +13,7 @@ function HumanAgo(int $timestamp, array $p = [])
 }
 
 to be called like humanago(time(), ['hl'=>'en', 'depth'=>1]);
-*/
+ */
 
 function HumanAgo(int $timestamp, int $depth = 2, string $lang = 'en', bool $short = false): string
 {

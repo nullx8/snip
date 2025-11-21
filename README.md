@@ -9,10 +9,11 @@ Because these snippets span many environments and coding styles, certain challen
 ## first structure proposal to keep things flexible and allows future expansion without breaking existing workflows
 
 - `snip/`
-  - `3rd/` - third party (vendor) items locally stored to maintain compatiblity
-  - `Core/` – Core `.inc.php` files, legacy snippets, shared utilities
-  - `Html/` – Output-visible components, templates, UI helpers
-  - `Net/` – Network logic, API helpers, inter-service utilities
+  - `3rd/`    - third party (vendor) items locally stored to maintain compatiblity
+  - `Core/`   – Core `.inc.php` files, legacy snippets, shared utilities
+  - `Html/`   – Output-visible components, templates, UI helpers
+  - `Net/`    – Network logic, API helpers, inter-service utilities
   - `Assets/` – Images, icons, and other shared static files
-  - `Misc/` – Unsorted or experimental snippets pending classification
+  - `Misc/`   – Unsorted or experimental snippets pending classification
 
+(to be extended)
