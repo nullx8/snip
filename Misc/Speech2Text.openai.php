@@ -1,6 +1,11 @@
 <?php
 
-// Your OpenAI API key
+
+// Single Use file to be used in a Apple Shortcut to record voice and transscribe it for more use locally.
+// to be called with HTTP Herader 'check' containing the last 6 digits of the OpenAI API key, and a Audio file as HTTP POST
+// short gossip about its creation (no technical details here https://0x8.in.th/bye-bye-siri
+
+// read OpenAI API key
 $apiKey = trim(file_get_contents(__DIR__.'/../3rd/OpenAi/.Token'));
 
 // primitive Security check (compares last 6 digits of API-Key with http check header
