@@ -10,6 +10,7 @@ Because these snippets span many environments and coding styles, certain challen
 
 - `snip/`
   - `3rd/`    - third party (vendor) items locally stored to maintain compatiblity
+  - `c/`      - Temp folder for direct access of cached data (in .gitignore)
   - `Core/`   – Core `.inc.php` files, legacy snippets, shared utilities
   - `Html/`   – Output-visible components, templates, UI helpers
   - `Net/`    – Network logic, API helpers, inter-service utilities
