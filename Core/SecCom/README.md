@@ -1,4 +1,4 @@
-# Crypto Directory Integrity System
+# Se[cure]Com[munication] between servers
 
 This directory contains all cryptographic materials used for
 inter-server communication.
@@ -23,13 +23,39 @@ All files in this directory are protected by a signed manifest:
 
 Any modification to any file will cause integrity verification to fail.
 
-## Workflow
+## Initial Workflow 
+### 1. Creating the master signing keys
+(offline!!)
 
-### 1. Generate Manifest
+./create_master_keys.sh
+git add master_signing_public.pem
+git commit -m "Add master signing public key"
+
+### 2. Creating a server’s keypair
 
 cd crypto
-./generate_manifest.sh
+./create_server_keys.sh serverA
+# DO NOT commit the private key
 
+keep keys/serverA_public.pem
+in th repro and commit:
+
+git add keys/serverA_public.pem
+git commit -m "Add public key for serverA"
+
+
+That's it, the Servers using the same repro should be able to verify eveything themselfs once repro updated.
+
+The crypto.php system verifies:
+- manifest signature
+- all files (including scripts) match their hash
+- keys are authentic
+
+
+( old docu below (needds to be made better))
+### 1. Generate Manifest
+
+./generate_manifest.sh
 
 This recreates `crypto_manifest.json`.
 
