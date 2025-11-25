@@ -63,7 +63,6 @@ $err  = curl_error($curl);
 curl_close($curl);
 
 file_put_contents($resultFile, "HTTP: $http\nERR:$err\nRES:$response");
-file_put_contents($resultLog, "HTTP: $http\nERR:$err\n--\n$response", FILE_APPEND | LOCK_EX);
 
 $out = array();
 $out['http'] = $http;
@@ -77,5 +76,13 @@ if ((isset($text->text))&&(strlen($text->text)>1)) {
 } else {
 	$out['text'] = "?";
 }
+
+if ((strlen($err)>1)) {
+	file_put_contents($resultLog, date('Y-m-d H:i:s')."\nHTTP: $http\nERR:$err\nRES:$response\n\n", FILE_APPEND | LOCK_EX);
+}
+else {
+	file_put_contents($resultLog, date('Y-m-d H:i:s')."\n".$text->text."\n\n", FILE_APPEND | LOCK_EX);
+}
+touch($resultLog, (time()+1)); // makes sure the logfile is the newest one
 
 die(json_encode($out));
