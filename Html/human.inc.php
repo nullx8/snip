@@ -30,7 +30,7 @@ function HumanAgo($timestamp,$max_detail_levels=2, $precision_level='second', $w
 function HumanAgo(int $timestamp, array $p = []) {
 	
 	$depth = $p['depth'] ?? 2; 
-	$lang= $p['hl'] ?? 'de'; // alias for Language
+	$lang= $p['hl'] ?? 'en'; // alias for Language
 	$short = $p['short'] ?? false;
 
 // pending from old/old function
@@ -116,7 +116,18 @@ function HumanAgo(int $timestamp, array $p = []) {
         : $lang['past_prefix'] . $text . $lang['past_suffix'];
 }
 
+## HumanDate(time(), ['hl'=>'en', 'short' => false, 'weekdayonly'=> false]);
+## if $_SESSION['hl'] is set and no 'hl parameter is given, session will be used.
+
+/* older calls for debugging
 function HumanDate($unix, $lang = 'en', $filter = 'none') {
+*/
+function HumanDate($unix, $p = []) {
+	
+	$hl= $p['hl'] ?? 'de'; // alias for Language
+	$shortDays = $p['shortDays'] ?? false;
+	$weekdayonly = $p['weekdayonly'] ?? false;
+
     // Short weekday names
     $days = [
         'en' => ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
@@ -127,6 +138,13 @@ function HumanDate($unix, $lang = 'en', $filter = 'none') {
         'de' => ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
     ];
 
+   	if ((isset($_SESSION['hl']))&&((!isset($p['hl'])))) {
+		$lang = $_SESSION['hl'];
+	}
+	else {
+	    $lang = $hl;
+	}
+
     // Fallback to English if invalid language passed
     if (!isset($days[$lang])) {
         $lang = 'en';
@@ -135,8 +153,13 @@ function HumanDate($unix, $lang = 'en', $filter = 'none') {
     // Extract weekday number (0–6)
     $weekdayIndex = date('w', $unix);
 
-    if ($filter == 'dayonly') {
-	    $days = $dayslong;
+    if ($weekdayonly) {
+		if ($shortDays) {
+		    $days = $dayslong;
+		}		
+	    else {
+		    $days = $dayslong;
+		}
 		return $days[$lang][$weekdayIndex];
 	}
 	if ($lang == "de") {
