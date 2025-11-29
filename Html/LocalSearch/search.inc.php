@@ -1,6 +1,6 @@
 <?php
 
-function local_filesystem_search_json($query, $root = '.', $translationFile = 'translations.json') {
+function local_filesystem_search_json($query, $root = '.', $translationFile = __DIR__.'/translations.json') {
     $q = strtolower(trim($query));
     if ($q === '') {
         return json_encode([]);
@@ -61,7 +61,7 @@ function local_filesystem_search_json($query, $root = '.', $translationFile = 't
         $results[] = [
             'title'         => $title,
             'url'           => $filename,
-            'original_file' => $filename,
+            'original_file' => realpath($filePath),
             'override'      => false
         ];
     }

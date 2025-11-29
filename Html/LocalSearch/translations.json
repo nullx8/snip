@@ -1,18 +1,17 @@
 {
-  "about.html": {
+  "human.inc.php": {
     "index": {
-      "title": "About Our Company",
+      "title": "Human Readable variable outputs",
       "links": [
-        "includes/about.inc.php",
-        "info/about.html"
+        "/var/www/html/lib/snip/Html/human.inc.php"
       ]
     }
   },
-  "test.php": {
+  "search.php": {
     "index": {
-      "title": "Test Panel (Custom)",
+      "title": "LocalSearch Test file",
       "links": [
-        "admin/test_overview.php",
+        "/var/www/html/lib/snip/Html/LocalSearch/Tests/search.php",
         "admin/test_panel.php"
       ]
     }
