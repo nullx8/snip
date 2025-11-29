@@ -1,0 +1,21 @@
+{
+  "about.html": {
+    "index": {
+      "title": "About Our Company",
+      "links": [
+        "includes/about.inc.php",
+        "info/about.html"
+      ]
+    }
+  },
+  "test.php": {
+    "index": {
+      "title": "Test Panel (Custom)",
+      "links": [
+        "admin/test_overview.php",
+        "admin/test_panel.php"
+      ]
+    }
+  }
+}
+
