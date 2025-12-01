@@ -1,6 +1,11 @@
 <?php
 	
 // expects 'CACHE' to be defined
+if (!defined('CACHE')) {
+    define('CACHE', __DIR__.'/../c');
+}
+
+
 /*
 	USAGE
 	
