@@ -1,4 +1,5 @@
-<?
+<?php
+// returns true if USER_AGENT contains mobile like string
 
 function isMobile() {
 	// returns true is its a mobile
