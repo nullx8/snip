@@ -85,7 +85,7 @@ if command -v tailscale >/dev/null 2>&1; then
     # tailscale netcheck nearest DERP line (encode safely to JSON string)
     # netcheck can be slow/hang in odd cases; keep it bounded if timeout exists
     if command -v timeout >/dev/null 2>&1; then
-        nearest_line="$(timeout 3 tailscale netcheck 2>/dev/null | grep -m1 'Nearest' || true)"
+        nearest_line="$(timeout 15 tailscale netcheck 2>/dev/null | grep -m1 'Nearest' || true)"
     else
         nearest_line="$(tailscale netcheck 2>/dev/null | grep -m1 'Nearest' || true)"
     fi
