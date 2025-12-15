@@ -1,4 +1,5 @@
 #!/bin/bash
+# this requires jq to be installed!
 set -euo pipefail
 
 # ---------------- Helpers ----------------
