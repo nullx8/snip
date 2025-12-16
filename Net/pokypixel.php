@@ -10,7 +10,7 @@ declare(strict_types=1);
  *
  * Env:
  *  - CACHE                 : base dir for cache payload files (fallback /tmp)
- *  - CRONJOBS_FILE         : path to cronjobs json (fallback: __DIR__/cronjobs.json)
+ *  - POKYPIXEL             : path to cronjobs json (fallback: __DIR__/pokypixel.json)
  *  - TRAFFIC_CRON_PROB     : probability gate (default 0.03)
  *  - TRAFFIC_CRON_BUDGET_MS: time budget (default 300)
  *  - TRAFFIC_CRON_TIMEOUT_S: per-endpoint timeout (default 1.2)
@@ -37,9 +37,9 @@ $BUDGET_MS   = (int)(getenv('TRAFFIC_CRON_BUDGET_MS') ?: '300');
 $TIMEOUT_S   = (float)(getenv('TRAFFIC_CRON_TIMEOUT_S') ?: '1.2');
 
 // Jobs file override (nested repo friendly)
-$JOBS_FILE = (string)(getenv('CRONJOBS_FILE') ?: '');
+$JOBS_FILE = (string)(getenv('POKYPIXEL') ?: '');
 if ($JOBS_FILE === '') {
-    $JOBS_FILE = __DIR__ . '/cronjobs.json';
+    $JOBS_FILE = __DIR__ . '/pokypixel.json';
 } else {
     // allow relative paths from script dir
     if ($JOBS_FILE[0] !== '/' && !preg_match('~^[A-Za-z]:[\\\\/]~', $JOBS_FILE)) {
