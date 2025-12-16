@@ -30,6 +30,9 @@ if (!defined('CACHE')) {
 */
 	
 function GetUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cacheDir = CACHE ) {
+	return getUrl($url, $cacheLifetime, $expected,$timeout, $cacheDir); 
+}
+function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cacheDir = CACHE ) {
     // Ensure cache directory exists
     if (!is_dir($cacheDir)) {
         mkdir($cacheDir, 0777, true);
@@ -47,10 +50,11 @@ function GetUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
     if ($hasCache && $cacheAge <= $cacheLifetime) {
         $cached = json_decode(file_get_contents($cacheFile), true);
         return [
-            'data'   => $cached['data'],
-            'error'  => null,
-            'http'   => $cached['http'],
-            'cached' => $cacheAge
+            'data'     => $cached['data'],
+            'error'    => null,
+            'http'     => $cached['http'],
+	    'cached'   => $cacheAge,
+	    'cachedat' => $cacheFile
         ];
     }
 
