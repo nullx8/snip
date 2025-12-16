@@ -78,8 +78,9 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
                 'data'   => $cached['data'],    // keep cached data
                 'error'  => $errorMsg,          // but show the error!
                 'http'   => $httpCode,          // return failed http status
-                'cached' => $cacheAge           // cache age
-            ];
+                'cached' => $cacheAge,           // cache age
+		'cachedat' => $cacheFile
+	];
         }
         return false;
     };
@@ -96,8 +97,9 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
             'data'   => null,
             'error'  => "CurlError: $curlErr",
             'http'   => null,
-            'cached' => 0
-        ];
+            'cached' => 0,
+	    'cachedat' => $cacheFile
+    	];
     }
 
     if ($httpCode < 200 || $httpCode >= 300) {
@@ -108,8 +110,9 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
             'data'   => $response,
             'error'  => "HttpError: $httpCode",
             'http'   => $httpCode,
-            'cached' => 0
-        ];
+            'cached' => 0,
+    	    'cachedat' => $cacheFile
+    	];
     }
 
     if ($expected !== null && is_string($expected)) {
@@ -121,7 +124,8 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
                 'data'   => $response,
                 'error'  => "ExpectedNotFound: '$expected'",
                 'http'   => $httpCode,
-                'cached' => 0
+		'cached' => 0,
+		'cachedat' => $cacheFile
             ];
         }
     }
@@ -135,7 +139,8 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
                 'data'   => $response,
                 'error'  => "ExpectedCallbackReturnedFalse",
                 'http'   => $httpCode,
-                'cached' => 0
+		'cached' => 0,
+		'cachedat' => $cacheFile
             ];
         }
     }
@@ -154,6 +159,7 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
         'data'   => $response,
         'error'  => null,
         'http'   => $httpCode,
-        'cached' => 0
+	'cached' => 0,
+	'cachedat' => $cacheFile
     ];
 }
