@@ -29,9 +29,6 @@ if (!defined('CACHE')) {
 
 */
 	
-function GetUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cacheDir = CACHE ) {
-	return getUrl($url, $cacheLifetime, $expected,$timeout, $cacheDir); 
-}
 function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cacheDir = CACHE ) {
     // Ensure cache directory exists
     if (!is_dir($cacheDir)) {
