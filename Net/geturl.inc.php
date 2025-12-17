@@ -51,7 +51,7 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
             'error'    => null,
             'http'     => $cached['http'],
 	    'cached'   => $cacheAge,
-	    'cachedat' => $cacheFile
+	    'cacheFile' => $cacheFile
         ];
     }
 
@@ -79,7 +79,7 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
                 'error'  => $errorMsg,          // but show the error!
                 'http'   => $httpCode,          // return failed http status
                 'cached' => $cacheAge,           // cache age
-		'cachedat' => $cacheFile
+		'cacheFile' => $cacheFile
 	];
         }
         return false;
@@ -98,7 +98,7 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
             'error'  => "CurlError: $curlErr",
             'http'   => null,
             'cached' => 0,
-	    'cachedat' => $cacheFile
+	    'cacheFile' => $cacheFile
     	];
     }
 
@@ -111,7 +111,7 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
             'error'  => "HttpError: $httpCode",
             'http'   => $httpCode,
             'cached' => 0,
-    	    'cachedat' => $cacheFile
+    	    'cacheFile' => $cacheFile
     	];
     }
 
@@ -125,7 +125,7 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
                 'error'  => "ExpectedNotFound: '$expected'",
                 'http'   => $httpCode,
 		'cached' => 0,
-		'cachedat' => $cacheFile
+		'cacheFile' => $cacheFile
             ];
         }
     }
@@ -140,7 +140,7 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
                 'error'  => "ExpectedCallbackReturnedFalse",
                 'http'   => $httpCode,
 		'cached' => 0,
-		'cachedat' => $cacheFile
+		'cacheFile' => $cacheFile
             ];
         }
     }
@@ -160,6 +160,6 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
         'error'  => null,
         'http'   => $httpCode,
 	'cached' => 0,
-	'cachedat' => $cacheFile
+	'cacheFile' => $cacheFile
     ];
 }
