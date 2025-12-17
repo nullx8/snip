@@ -1,11 +1,5 @@
 <?php
 	
-// expects 'CACHE' to be defined
-if (!defined('CACHE')) {
-    define('CACHE', __DIR__.'/../c');
-}
-
-
 /*
 	USAGE
 	
@@ -28,7 +22,14 @@ if (!defined('CACHE')) {
 		
 
 */
-	
+
+
+// expects 'CACHE' to be defined
+if (!defined('CACHE')) {
+    define('CACHE', __DIR__.'/../c');
+}
+
+
 function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cacheDir = CACHE ) {
     // Ensure cache directory exists
     if (!is_dir($cacheDir)) {
