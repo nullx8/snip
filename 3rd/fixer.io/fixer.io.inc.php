@@ -51,14 +51,38 @@ $fx = json_decode(the json result)
 
 
 function fixerFxRate(string $from, string $to, $scale = null) {
-	$APIKEY = trim(file_get_contents(__DIR__.'/.Token'));
-	$cacheTime = 64800; // 18 hours (64800) for a free account
+    static $apiKey = null;
+    static $fixerFeed = null;
 
-	$fixerFeed = getUrl('https://data.fixer.io/api/latest?access_key='.$APIKEY.'&symbols=&format=1', $cacheTime, 'rates', 5);
+	if ($apiKey === null) {
+		$apiKey = trim((string)@file_get_contents(__DIR__.'/.Token'));
+		if ($apiKey === '') {
+			return [
+				'timestamp'  => null,
+				'from'       => strtoupper($from),
+                'to'         => strtoupper($to),
+                'multiplier' => null,
+                'error'      => 'Missing API key (.Token)',
+            ];
+        }
+    }
 
+	if ($fixerFeed === null) {
+		$cacheTime = 64800; // 18 hours (64800) for a free account
+		$resp = getUrl(
+			'https://data.fixer.io/api/latest?access_key='.$apiKey.'&format=1',
+			$cacheTime,
+			'rates',
+			5
+		);
+//        print_r($resp['cached']);
+		$fixerFeed = json_decode($resp['data'] ?? '', true);
+        if (!is_array($fixerFeed)) {
+            $fixerFeed = ['success' => false, 'error' => 'Invalid JSON'];
+        }
+    }
+    
 //	print_r($fixerFeed['cached']); // prints the cache age for debugging
-	
-	$fixerFeed = json_decode($fixerFeed['data'], true);
 	
 	return _fixerFxRate($from, $to, $fixerFeed, $scale);
 }
