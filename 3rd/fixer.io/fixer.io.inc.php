@@ -50,7 +50,7 @@ $fx = json_decode(the json result)
 */
 
 
-function fixerFxRate(string $from, string $to, $scale = 16) {
+function fixerFxRate(string $from, string $to, $scale = null) {
 	$APIKEY = trim(file_get_contents(__DIR__.'/.Token'));
 	$cacheTime = 64800; // 18 hours (64800) for a free account
 
