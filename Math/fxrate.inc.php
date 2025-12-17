@@ -14,11 +14,12 @@ function fxRate($from, $to, $round = null) {
 // print_r(fxRate('EUR','usD'));
 */
 
+/*
 echo "<br>eur/usd: "; echo json_encode(fxRate('EUR','USD'));
 echo "<br>eth/usd: "; echo json_encode(fxRate('ETH','USD'));
 echo "<br>usd/eth: "; echo json_encode(fxRate('usd','eth'));
 echo "<br>btc/btc: "; echo json_encode(fxRate('BTC','BtC'));
-
+*/
 
 function _ensureFixerLoaded(): void
 {
