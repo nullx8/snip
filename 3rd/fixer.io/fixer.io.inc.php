@@ -12,8 +12,9 @@
 if (!is_file(__DIR__.'/.Token')) {
 	die("requires .Token file with APIKey");
 }
-include(__DIR__.'/../../Net/geturl.inc.php');
-
+if (!function_exists('getUrl')) {
+	include(__DIR__.'/../../Net/geturl.inc.php');
+}
 
 /**
  * Returns a multiplier to convert FROM -> TO using a dataset quoted in dataset["base"] (e.g. EUR).
