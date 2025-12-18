@@ -17,10 +17,10 @@ function fxRate($from, $to, $round = null) {
 /**
  * fxHtml outputs just the result with no data .. (good to include in html template code)
  *
- * example fxHtml('eur','usd') just returns the multiplier 
+ * example fxHtml('eur','usd', 1) just returns the exchange rate 
  */
-function fxHtml($from, $to, $scale =2) {
-	return fxRate($from, $to, $scale)['rate'];
+function fxHtml($from, $to, $value = 1, ?int $round =2) {
+	return round($value*fxRate($from, $to, null)['rate'], $round);
 }
 
 /**
@@ -50,7 +50,7 @@ function fxRate(string $from, string $to, ?int $round = null): array
     // ---- fiat <-> fiat: Fixer only
     if (!$fromIsCrypto && !$toIsCrypto) {
         _ensureFixerLoaded();
-        $fx = fixerFxRate($fromU, $toU, $round);
+        $fx = fixerFxRate($fromU, $toU, 40);
 
         // normalize key to "rate" if provider returns "multiplier"
         if (is_array($fx) && !isset($fx['rate'])) {
@@ -152,7 +152,7 @@ function fxRate(string $from, string $to, ?int $round = null): array
     }
 
     if ($round !== null) {
-        $rate = round((float)$rate, (int)$round);
+	    $rate = round((float)$rate, (int)$round);
     }
 
     return ['timestamp'=>$ts,'from'=>$fromU,'to'=>$toU,'rate'=>(float)$rate];
