@@ -14,42 +14,13 @@ function fxRate($from, $to, $round = null) {
 // print_r(fxRate('EUR','usD'));
 */
 
-/*
-echo "<br>eur/usd: "; echo json_encode(fxRate('EUR','USD'));
-echo "<br>eth/usd: "; echo json_encode(fxRate('ETH','USD'));
-echo "<br>usd/eth: "; echo json_encode(fxRate('usd','eth'));
-echo "<br>btc/btc: "; echo json_encode(fxRate('BTC','BtC'));
-*/
-
-function _ensureFixerLoaded(): void
-{
-    if (!function_exists('fixerFxRate')) {
-        require_once __DIR__ . '/../3rd/fixer.io/fixer.io.inc.php';
-    }
-    if (!function_exists('fixerFxRate')) {
-        throw new RuntimeException('fixerFxRate() not available after include');
-    }
-}
-
-function _ensureCryptoLoaded(): void
-{
-    if (!function_exists('cryptoToEur')) {
-        require_once __DIR__ . '/../3rd/cryptocompare.com/cryptocompare.inc.php';
-		function cryptoToEur(string $sym, int $cacheTime = 600): array {
-			return cryptocompareToEur($sym, $cacheTime);
-		}
-	}
-
-    if (!function_exists('cryptoToEur')) {
-        throw new RuntimeException('cryptoToEur() not available after include');
-    }
-}
-
-function _fxExtractRate(array $fx): ?float
-{
-    if (isset($fx['rate']) && is_numeric($fx['rate'])) return (float)$fx['rate'];
-    if (isset($fx['multiplier']) && is_numeric($fx['multiplier'])) return (float)$fx['multiplier'];
-    return null;
+/**
+ * fxHtml outputs just the result with no data .. (good to include in html template code)
+ *
+ * example fxHtml('eur','usd') just returns the multiplier 
+ */
+function fxHtml($from, $to, $scale =2) {
+	return fxRate($from, $to, $scale)['rate'];
 }
 
 /**
@@ -58,6 +29,7 @@ function _fxExtractRate(array $fx): ?float
  *
  * Returns: ['timestamp'=>int, 'from'=>string, 'to'=>string, 'rate'=>float|null, (optional) 'error'=>string]
  */
+
 function fxRate(string $from, string $to, ?int $round = null): array
 {
     $fromU = strtoupper(trim($from));
@@ -92,7 +64,7 @@ function fxRate(string $from, string $to, ?int $round = null): array
     // ---- crypto involved: bridge through EUR
     _ensureCryptoLoaded();
 
-    $cryptoCacheTime = 600; // seconds (your provider shim may ignore/override)
+    $cryptoCacheTime = 3600; // seconds (your provider shim may ignore/override)
     $ts = time();
 
     $fromCryptoEur = null; // EUR per 1 crypto
@@ -184,4 +156,35 @@ function fxRate(string $from, string $to, ?int $round = null): array
     }
 
     return ['timestamp'=>$ts,'from'=>$fromU,'to'=>$toU,'rate'=>(float)$rate];
+}
+
+function _ensureFixerLoaded(): void
+{
+    if (!function_exists('fixerFxRate')) {
+        require_once __DIR__ . '/../3rd/fixer.io/fixer.io.inc.php';
+    }
+    if (!function_exists('fixerFxRate')) {
+        throw new RuntimeException('fixerFxRate() not available after include');
+    }
+}
+
+function _ensureCryptoLoaded(): void
+{
+    if (!function_exists('cryptoToEur')) {
+        require_once __DIR__ . '/../3rd/cryptocompare.com/cryptocompare.inc.php';
+		function cryptoToEur(string $sym, int $cacheTime = 600): array {
+			return cryptocompareToEur($sym, $cacheTime);
+		}
+	}
+
+    if (!function_exists('cryptoToEur')) {
+        throw new RuntimeException('cryptoToEur() not available after include');
+    }
+}
+
+function _fxExtractRate(array $fx): ?float
+{
+    if (isset($fx['rate']) && is_numeric($fx['rate'])) return (float)$fx['rate'];
+    if (isset($fx['multiplier']) && is_numeric($fx['multiplier'])) return (float)$fx['multiplier'];
+    return null;
 }
