@@ -9,12 +9,13 @@ Because these snippets span many environments and coding styles, certain challen
 ## first structure proposal to keep things flexible and allows future expansion without breaking existing workflows
 
 - `snip/`
-  - `3rd/`    - third party (vendor) items locally stored to maintain compatiblity
+  - `3rd/`    - third party (vendor) items locally stored to maintain compatibility
   - `c/`      - Temp folder for direct access of cached data (in .gitignore)
   - `Core/`   – Core `.inc.php` files, legacy snippets, shared utilities
   - `Html/`   – Output-visible components, templates, UI helpers
   - `Net/`    – Network logic, API helpers, inter-service utilities
   - `Assets/` – Images, icons, and other shared static files
   - `Misc/`   – Unsorted or experimental snippets pending classification
-
+  - `Ext`     - Specific single use router functions that utilize vendor specific recourses from ./3rd
+ 
 (to be extended)
