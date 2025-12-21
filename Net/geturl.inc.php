@@ -24,13 +24,16 @@
 */
 
 
-// expects 'CACHE' to be defined
 if (!defined('CACHE')) {
+    // try use envioment
+    define('CACHE', getenv('CACHE'));
+}
+if (!defined('CACHE')) {
+    // hardset fallback
     define('CACHE', __DIR__.'/../c');
 }
 
-
-function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cacheDir = CACHE ) {
+function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cacheDir = CACHE , $auth = null) {
     // Ensure cache directory exists
     if (!is_dir($cacheDir)) {
         mkdir($cacheDir, 0777, true);
@@ -57,6 +60,7 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
     }
 
     // cURL request
+
     $ch = curl_init($url);
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
@@ -65,6 +69,11 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
         CURLOPT_FOLLOWLOCATION => true,
         CURLOPT_SSL_VERIFYPEER => true,
     ]);
+
+	if ($auth) {
+		$authorizationHeader = "Authorization: Bearer " . $auth;
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array($authorizationHeader));
+	}
 
     $response = curl_exec($ch);
     $curlErr  = curl_error($ch);
