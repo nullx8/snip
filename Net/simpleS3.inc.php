@@ -34,25 +34,53 @@ function s3Get(string $bucket, string $key, ?array $s3Cfg = null): string
     return $res['body'];
 }
 
-function s3Put(
-    string $bucket,
-    string $key,
-    string $data,
-    array $s3Cfg,
-    string $contentType = 'application/octet-stream'
-): bool {
-    $res = s3_request('PUT', $bucket, $key, $data, $s3Cfg, [
-        'headers' => [
-            'content-type' => $contentType,
-            // Keep it private unless you explicitly want public objects
-            'x-amz-acl' => 'private',
-        ],
-    ]);
+function s3Put(string $bucket, string $key, string $body, ?array $s3Cfg = null, string $contentType = 'application/json'): array
+{
+    // For now we only support text/json safely
+    return s3PutText($bucket, $key, $body, $s3Cfg, $contentType);
+}
 
-    if (!$res['ok']) {
-        throw new RuntimeException("S3 write failed ({$res['status']}): {$res['error']}");
+function s3Delete(string $bucket, string $key, ?array $s3Cfg = null): array
+{
+    $s3Cfg = $s3Cfg ?? s3_config_from_env();
+    $res   = s3_request('DELETE', $bucket, $key, null, $s3Cfg);
+
+    return [
+        'status' => (int)($res['status'] ?? 0),
+        'data'   => (string)($res['data'] ?? ''),
+        'error'  => $res['error'] ?? null,
+    ];
+}
+
+function s3PutText(string $bucket, string $key, string $body, ?array $s3Cfg = null, string $contentType = 'application/json'): array
+{
+    $s3Cfg = $s3Cfg ?? s3_config_from_env();
+
+    // text/json guard: block obvious binary
+    if (preg_match("/\x00/", $body)) {
+        return ['status'=>0, 'data'=>'', 'error'=>'Blocked binary payload (text/json only)'];
     }
-    return true;
+
+    // If your s3_request supports headers, you can add them there.
+    // If it doesn't, you can ignore contentType for now.
+    $res = s3_request('PUT', $bucket, $key, $body, $s3Cfg /*, ['Content-Type'=>$contentType]*/);
+
+    return [
+        'status' => (int)($res['status'] ?? 0),
+        'data'   => (string)($res['data'] ?? ''),
+        'error'  => $res['error'] ?? null,
+    ];
+}
+function s3Touch(string $bucket, string $key, ?array $s3Cfg = null): array
+{
+    $markerKey = $key . '.touch.json';
+
+    $payload = json_encode([
+        'touched_at' => gmdate('c'),
+        'target'     => $key,
+    ], JSON_UNESCAPED_SLASHES);
+
+    return s3PutText($bucket, $markerKey, $payload, $s3Cfg, 'application/json');
 }
 
 /**
@@ -237,4 +265,16 @@ function s3_uri_encode(string $path): string
         return str_replace('%7E', '~', rawurlencode($p));
     }, $parts);
     return implode('/', $enc);
+}
+
+function s3GetRes(string $bucket, string $key, ?array $s3Cfg = null): array
+{
+    $s3Cfg = $s3Cfg ?? s3_config_from_env();
+    $res   = s3_request('GET', $bucket, $key, null, $s3Cfg);
+
+    return [
+        'status' => (int)($res['status'] ?? 0),
+        'data'   => (string)($res['data'] ?? ''),
+        'error'  => $res['error'] ?? null,
+    ];
 }

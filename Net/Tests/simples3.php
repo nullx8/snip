@@ -16,11 +16,19 @@ $cfg = [
 // Bucket is just the bucket name
 $bucket = getenv('S3_BUCKET');
 
-// Key should be without leading slash (your function tolerates it, but keep it clean)
-$key = 'testfile.json';
-
 // Write
-s3_write_file($bucket, $key, '{"hello":"world"}', $cfg, 'application/json');
+$t = time();
+echo "<pre>s3Put (non existing file ".$t.".json)<br />";
+print_r(s3Put(getenv('S3_BUCKET'), $t.'.json', '{"time":"'.$t.'"}', null, 'application/json'));
 
 // Read
-echo s3_read_file($bucket, $key, $cfg);
+echo "<hr>s3Get<br>";
+print_r(s3Get(getenv('S3_BUCKET'), $t.'.json',$sfg));
+
+echo "<hr>geturl<br>";
+require_once('geturl.inc.php');
+print_r(getUrl('s3://eqmesh-env/'.$t.'.json'));
+
+print_r(getUrl('s3://'.getenv('S3_BUCKET').'/'.$t.'.json'));
+
+echo "</pre>";
