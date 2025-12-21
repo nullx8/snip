@@ -4,7 +4,7 @@
  * Requires: PHP 7.4+ (works on 8.x), ext-curl, ext-json
  *
  * CONFIG:
- * $cfg = [
+ * $s3Cfg = [
  *   'access_key' => 'DO000....',
  *   'secret_key' => 'xxxx....',
  *   'region'     => 'nyc3', // for Spaces: region == datacenter
@@ -16,9 +16,15 @@
 
 /* -------------------------- Public API -------------------------- */
 
-function s3_read_file(string $bucket, string $key, array $cfg): string
+if (!isset($s3Cfg)) {
+	$s3Cfg = s3_config_from_env();
+}
+
+function s3Get(string $bucket, string $key, ?array $s3Cfg = null): string
 {
-    $res = s3_request('GET', $bucket, $key, '', $cfg, [
+    $s3Cfg = $s3Cfg ?? s3_config_from_env();
+
+    $res = s3_request('GET', $bucket, $key, '', $s3Cfg, [
         'headers' => [],
     ]);
 
@@ -28,14 +34,14 @@ function s3_read_file(string $bucket, string $key, array $cfg): string
     return $res['body'];
 }
 
-function s3_write_file(
+function s3Put(
     string $bucket,
     string $key,
     string $data,
-    array $cfg,
+    array $s3Cfg,
     string $contentType = 'application/octet-stream'
 ): bool {
-    $res = s3_request('PUT', $bucket, $key, $data, $cfg, [
+    $res = s3_request('PUT', $bucket, $key, $data, $s3Cfg, [
         'headers' => [
             'content-type' => $contentType,
             // Keep it private unless you explicitly want public objects
@@ -58,7 +64,7 @@ function s3_config_from_env(string $prefix = 'S3_'): array
 {
     $get = fn($k, $d=null) => getenv($prefix.$k) !== false ? getenv($prefix.$k) : $d;
 
-    $cfg = [
+    $s3Cfg = [
         'access_key' => (string)$get('ACCESS_KEY'),
         'secret_key' => (string)$get('SECRET_KEY'),
         'region'     => (string)$get('REGION'),
@@ -68,9 +74,9 @@ function s3_config_from_env(string $prefix = 'S3_'): array
     ];
 
     foreach (['access_key','secret_key','region','endpoint'] as $k) {
-        if ($cfg[$k] === '') throw new InvalidArgumentException("Missing env {$prefix}{$k}");
+        if ($s3Cfg[$k] === '') throw new InvalidArgumentException("Missing env {$prefix}{$k}");
     }
-    return $cfg;
+    return $s3Cfg;
 }
 
 /* -------------------------- Core Request -------------------------- */
@@ -80,15 +86,15 @@ function s3_request(
     string $bucket,
     string $key,
     string $body,
-    array $cfg,
+    array $s3Cfg,
     array $opt = []
 ): array {
     $method = strtoupper($method);
     $service = 's3';
-    $region  = $cfg['region'];
-    $endpoint = $cfg['endpoint'];
-    $timeout = $cfg['timeout'] ?? 10;
-    $usePathStyle = (bool)($cfg['use_path_style'] ?? false);
+    $region  = $s3Cfg['region'];
+    $endpoint = $s3Cfg['endpoint'];
+    $timeout = $s3Cfg['timeout'] ?? 10;
+    $usePathStyle = (bool)($s3Cfg['use_path_style'] ?? false);
 
     // Build host + url
     $key = ltrim($key, '/');
@@ -153,12 +159,12 @@ function s3_request(
         $credentialScope . "\n" .
         hash('sha256', $canonicalRequest);
 
-    $signingKey = s3_sigv4_key($cfg['secret_key'], $dateStamp, $region, $service);
+    $signingKey = s3_sigv4_key($s3Cfg['secret_key'], $dateStamp, $region, $service);
     $signature  = hash_hmac('sha256', $stringToSign, $signingKey);
 
     $authorization =
         "AWS4-HMAC-SHA256 " .
-        "Credential={$cfg['access_key']}/{$credentialScope}, " .
+        "Credential={$s3Cfg['access_key']}/{$credentialScope}, " .
         "SignedHeaders={$signedHeaders}, " .
         "Signature={$signature}";
 
