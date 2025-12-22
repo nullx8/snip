@@ -9,9 +9,16 @@
 
 // if (!defined('CACHE')) { die("No Direct access"); }
 
-if (!is_file(__DIR__.'/.Token')) {
-	die("requires .Token file with APIKey");
+if (!defined("FIXER")) {
+	define('FIXER',getenv('FIXER'));
 }
+if (!defined("FIXER")) {
+	define('FIXER',trim((string)@file_get_contents(__DIR__.'/.Token')));
+}
+if (!defined("FIXER")) {
+	die("requires .Token file with APIKey or setenv(FIXER) or define(FIXER)");
+}
+
 if (!function_exists('getUrl')) {
 	include(__DIR__.'/../../Net/geturl.inc.php');
 }
