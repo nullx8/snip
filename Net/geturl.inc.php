@@ -23,11 +23,14 @@
 
 */
 
-
 if (!defined('CACHE')) {
-    define('CACHE', getenv('CACHE'));
+    $dc = getenv('CACHE');
+    if (strlen($dc)>2) {
+	    define('CACHE', getenv('CACHE'));
+	}
 }
 if (!defined('CACHE')) {
+    // fallback to hardcoded 
     define('CACHE', __DIR__.'/../c');
 }
 
