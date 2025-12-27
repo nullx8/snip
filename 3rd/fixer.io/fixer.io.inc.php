@@ -64,6 +64,7 @@ function fixerFxRate(string $from, string $to, $scale = null) {
 
 	if ($apiKey === null) {
 		$apiKey = trim((string)@file_get_contents(__DIR__.'/.Token'));
+		if (empty($apiKey)) { $apiKey = trim(getenv('FIXER_API_KEY')); }
 		if ($apiKey === '') {
 			return [
 				'timestamp'  => null,
