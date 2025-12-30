@@ -70,14 +70,14 @@ set_time_limit(120);
 session_start();
 
 
-if ((isset($_SESSION['pokypixel_queue']))&&(is_array($_SESSION['pokypixel_queue']))) {
+if (isset($_SESSION['pokypixel_queue'])) {
 	$queue = $_SESSION['pokypixel_queue'];
 }
 else {
 	// dummy host in case session is empty
-echo "fake";
+// echo "fake";
 	$thost = 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].'/?me=true';
-echo $thost;
+// echo $thost;
 	$queue = [
 		['id' => 'dummy', 'url' => $thost, 'maxAge' => 6000],
 	];
@@ -94,7 +94,7 @@ $maxBackoffSec  = 900;
 
 echo "next";
 
-$state = $_SESSION['pump_state'] ?? [
+$state = $_SESSION['pokypixel_state'] ?? [
   'cursor' => 0,
   'fails'  => [], // id => ['n'=>int,'until'=>ts]
 ];
@@ -141,8 +141,9 @@ for ($step = 0; $step < $maxScan; $step++) {
   // You MUST call getUrl() (no pre-check)
   if (!function_exists('getUrl')) { require_once(__DIR__.'/geturl.inc.php'); }
   $resp = getUrl($url, $maxAge); // adapt to your signature
-  syslog(LOG_INFO, "Pokypixel Fetch:".$url."[". $maxAge."]");
-  //  print_r($resp);
+  syslog(LOG_INFO, "Pokypixel Fetch:".$url."[".$resp['cached']."|". $maxAge."]");
+ //   print_r($url);
+ //   print_r($resp);
     
   $http  = (int)($resp['http'] ?? 0);
   $error = (string)($resp['error'] ?? '');
@@ -207,7 +208,7 @@ for ($step = 0; $step < $maxScan; $step++) {
 $state['cursor'] = ($cursor + $scanned) % $count;
 
 session_start();
-$_SESSION['pump_state'] = $state;
+$_SESSION['pokypixel_state'] = $state;
 header('PokyPixel-state: '.$state);
 session_write_close();
 
