@@ -141,7 +141,8 @@ for ($step = 0; $step < $maxScan; $step++) {
   // You MUST call getUrl() (no pre-check)
   if (!function_exists('getUrl')) { require_once(__DIR__.'/geturl.inc.php'); }
   $resp = getUrl($url, $maxAge); // adapt to your signature
-//  print_r($resp);
+  syslog(LOG_INFO, "Pokypixel Fetch:".$url."[". $maxAge."]");
+  //  print_r($resp);
     
   $http  = (int)($resp['http'] ?? 0);
   $error = (string)($resp['error'] ?? '');
