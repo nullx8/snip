@@ -54,7 +54,8 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
         return [
             'data'      => $cached['data'],
             'error'     => null,
-            'http'      => $cached['http'],
+	    'url'	=> $url,
+	    'http'      => $cached['http'],
             'cached'    => $cacheAge,
             'cacheFile' => $cacheFile
         ];
@@ -67,6 +68,7 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
             return [
                 'data'      => $cached['data'],
                 'error'     => $errorMsg,
+	        'url'       => $url,
                 'http'      => $httpCode,
                 'cached'    => $cacheAge,
                 'cacheFile' => $cacheFile
@@ -164,6 +166,7 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
         return [
             'data'      => null,
             'error'     => "CurlError: $curlErr",
+            'url'       => $url,
             'http'      => null,
             'cached'    => 0,
             'cacheFile' => $cacheFile
@@ -177,6 +180,7 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
         return [
             'data'      => $response,
             'error'     => "HttpError: $httpCode",
+            'url'       => $url,
             'http'      => $httpCode,
             'cached'    => 0,
             'cacheFile' => $cacheFile
@@ -191,6 +195,7 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
             return [
                 'data'      => $response,
                 'error'     => "ExpectedNotFound: '$expected'",
+                'url'       => $url,
                 'http'      => $httpCode,
                 'cached'    => 0,
                 'cacheFile' => $cacheFile
@@ -206,6 +211,7 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
             return [
                 'data'      => $response,
                 'error'     => "ExpectedCallbackReturnedFalse",
+                'url'       => $url,
                 'http'      => $httpCode,
                 'cached'    => 0,
                 'cacheFile' => $cacheFile
@@ -225,6 +231,7 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
     return [
         'data'      => $response,
         'error'     => null,
+        'url'       => $url,
         'http'      => $httpCode,
         'cached'    => 0,
         'cacheFile' => $cacheFile
