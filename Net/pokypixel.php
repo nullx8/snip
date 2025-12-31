@@ -23,6 +23,13 @@ $debug = false; // set to true for detailed outputs
 
 function finish_request(): void
 {
+	session_start();
+
+	$queue = $_SESSION['pokypixel_queue'] ?? [];
+	$state = $_SESSION['pokypixel_state'] ?? ['cursor'=>0,'fails'=>[]];
+
+	session_write_close(); // release lock BEFORE any slow work
+
     // Try the “real” function for the current SAPI first
     if (function_exists('fastcgi_finish_request')) {
         fastcgi_finish_request();   // php-fpm
@@ -69,9 +76,11 @@ set_time_limit(120);
 // ------------------------------------------------------------
 session_start();
 
+syslog(LOG_INFO, "PUMP (Pokypixel) sid=".session_id()." q=".count($_SESSION['pokypixel_queue'] ?? []));
 
 if (isset($_SESSION['pokypixel_queue'])) {
 	$queue = $_SESSION['pokypixel_queue'];
+	session_write_close();
 }
 else {
 	// dummy host in case session is empty
@@ -82,6 +91,28 @@ else {
 		['id' => 'dummy', 'url' => $thost, 'maxAge' => 6000],
 	];
 }
+
+
+// Keep only numeric keys, sort by priority ascending
+$priorities = array_keys($queue);
+sort($priorities, SORT_NUMERIC);
+
+// Build ordered list
+$ordered = [];
+foreach ($priorities as $p) {
+  $item = $queue[$p];
+
+  // allow either a single item or a list of items at same priority
+  if (isset($item['url'])) {
+    $ordered[] = $item + ['prio' => $p];
+  } else {
+    foreach ((array)$item as $sub) {
+      if (isset($sub['url'])) $ordered[] = $sub + ['prio' => $p];
+    }
+  }
+}
+
+$queue = $ordered;
 
 // Work budget per call (keeps endpoint fast)
 $maxScan = min(count($queue), 30);
