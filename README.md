@@ -11,12 +11,12 @@ Because these snippets span many environments and coding styles, certain challen
 - `snip/`
   - `3rd/`    - third party (vendor) items locally stored to maintain compatibility
   - `c/`      - Temp folder for direct access of cached data (in .gitignore)
-  - `tmp`     - just for temporary exchange (not to be used as cache or permanent)
   - `Core/`   – Core `.inc.php` files, legacy snippets, shared utilities
   - `Html/`   – Output-visible components, templates, UI helpers
   - `Net/`    – Network logic, API helpers, inter-service utilities
   - `Assets/` – Images, icons, and other shared static files
   - `Misc/`   – Unsorted or experimental snippets pending classification
   - `Ext`     - Specific single use router functions that utilize vendor specific recourses from ./3rd
+  - `tmp`     - just for temporary exchange (not to be used as cache or permanent (in .gitignore))
  
 (to be extended)
