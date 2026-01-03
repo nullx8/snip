@@ -68,7 +68,7 @@ function getUrl( $url, $cacheLifetime = 30, $expected = null, $timeout = 5, $cac
             return [
                 'data'      => $cached['data'],
                 'error'     => $errorMsg,
-	        'url'       => $url,
+//	        'url'       => $url,
                 'http'      => $httpCode,
                 'cached'    => $cacheAge,
                 'cacheFile' => $cacheFile
