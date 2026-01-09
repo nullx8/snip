@@ -1,6 +1,7 @@
 {
     "require": {
-        "deepseek-php/deepseek-php-client": "^2.0"
+        "deepseek-php/deepseek-php-client": "^2.0",
+        "guzzlehttp/guzzle": "^7.10"
     },
     "config": {
         "allow-plugins": {
