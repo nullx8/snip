@@ -4,7 +4,7 @@ if (!defined('DB_HOST')) { 		define('DB_HOST', 		getenv('DB_HOST') ?: 'localhost
 if (!defined('DB_USER')) { 		define('DB_USER', 		getenv('DB_USER') ?: 'root'); }
 if (!defined('DB_PWD')) { 		define('DB_PWD', 		getenv('DB_PWD') ?: ''); }
 if (!defined('DB_DB')) { 		define('DB_DB', 		getenv('DB_DB') ?: ''); }
-if (!defined('DB_CHARSET')) { 	define('DB_CHARSET', 	getenv('DB_CHARSET') ?: 'utf-8'); }
+if (!defined('DB_CHARSET')) { 	define('DB_CHARSET', 	getenv('DB_CHARSET') ?: 'utf8mb4'); }
 
 /*
  * call with 
