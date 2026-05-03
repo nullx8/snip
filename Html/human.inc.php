@@ -31,6 +31,9 @@ function humanMoney($amount, $currency = 'USD', $settings = array())
 {
     $currency = strtoupper(trim($currency));
 
+	// detect "integer-like" values safely (handles float precision)
+	$decimals = (abs($amount - round($amount)) < 0.00001) ? 0 : 2;
+
     $defaults = array(
         'locale' => null,
         'decimals' => 2,
@@ -62,6 +65,7 @@ function humanMoney($amount, $currency = 'USD', $settings = array())
 
         if (!isset($formatters[$cacheKey])) {
             $formatters[$cacheKey] = new NumberFormatter($locale, NumberFormatter::CURRENCY);
+			$formatters[$cacheKey]->setAttribute(NumberFormatter::FRACTION_DIGITS, $decimals);
         }
 
         $formatted = $formatters[$cacheKey]->formatCurrency((float)$amount, $currency);
@@ -80,12 +84,12 @@ function humanMoney($amount, $currency = 'USD', $settings = array())
             ? $settings['thousand_sep']
             : humanMoneyThousandSep($locale);
 
-        $number = number_format(
-            (float)$amount,
-            (int)$settings['decimals'],
-            $decimalSep,
-            $thousandSep
-        );
+		$number = number_format(
+			(float)$amount,
+			(int)$decimals,
+			$decimalSep,
+			$thousandSep
+		);
 
         $position = $settings['symbol_position'];
         if (!$position) {
@@ -151,22 +155,22 @@ function humanMoneySymbol($currency)
     return isset($map[$currency]) ? $map[$currency] : $currency;
 }
 
-function humanMoneyDecimalSep($locale)
+function humanMoneyDecimalSep($locale) // using comma instead of dot
 {
     return in_array($locale, array('de_DE', 'fr_FR', 'es_ES', 'it_IT', 'nl_NL', 'nb_NO')) ? ',' : '.';
 }
 
 function humanMoneyThousandSep($locale)
 {
-    if (in_array($locale, array('es_ES'))) {
+    if (in_array($locale, array('es_ES'))) { // using dot instead of Comma
         return '.';
     }
 
-    if (in_array($locale, array('de_DE', 'it_IT', 'nl_NL','nb_NO'))) {
+    if (in_array($locale, array('de_DE', 'it_IT', 'nl_NL','nb_NO'))) { // using blanks
 	    return ' ';
 	}
 	
-	return '';
+	return ',';
 }
 
 function humanMoneySymbolPosition($currency)
