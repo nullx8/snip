@@ -7,10 +7,10 @@
 	- HumanAgo
 	- HumanDate
 	- HumanShortNumber
+	- HumanMoney
 	
 	ToDo (cote parts below)
 	- HumanPhone
-	- HumanMoney
 	- HumanTimeDiff
 	- HumanSize
 
@@ -26,6 +26,153 @@ function HumanAgo($timestamp,$max_detail_levels=2, $precision_level='second', $w
 
 // if $_SESSION['hl'] is set and no 'hl parameter is given, session will be used.
 // HumanAgo_old has maxage and $precision_level as features that are still missing here
+
+function humanMoney($amount, $currency = 'USD', $settings = array())
+{
+    $currency = strtoupper(trim($currency));
+
+    $defaults = array(
+        'locale' => null,
+        'decimals' => 2,
+        'symbol' => null,
+        'symbol_position' => null, // before, after, null = auto
+        'space' => null,
+        'decimal_sep' => null,
+        'thousand_sep' => null,
+        'html' => true
+    );
+
+    foreach ($defaults as $key => $value) {
+        if (!isset($settings[$key])) {
+            $settings[$key] = $value;
+        }
+    }
+
+    $locale = $settings['locale'];
+    if (!$locale) {
+        $locale = humanMoneyLocaleFromCurrency($currency);
+    }
+
+    $formatted = null;
+
+    if (class_exists('NumberFormatter')) {
+        static $formatters = array();
+
+        $cacheKey = $locale . '|' . $currency;
+
+        if (!isset($formatters[$cacheKey])) {
+            $formatters[$cacheKey] = new NumberFormatter($locale, NumberFormatter::CURRENCY);
+        }
+
+        $formatted = $formatters[$cacheKey]->formatCurrency((float)$amount, $currency);
+    }
+
+    if ($formatted === false || $formatted === null || $settings['decimal_sep'] !== null || $settings['thousand_sep'] !== null || $settings['symbol'] !== null || $settings['symbol_position'] !== null) {
+        $symbol = $settings['symbol'] !== null
+            ? $settings['symbol']
+            : humanMoneySymbol($currency);
+
+        $decimalSep = $settings['decimal_sep'] !== null
+            ? $settings['decimal_sep']
+            : humanMoneyDecimalSep($locale);
+
+        $thousandSep = $settings['thousand_sep'] !== null
+            ? $settings['thousand_sep']
+            : humanMoneyThousandSep($locale);
+
+        $number = number_format(
+            (float)$amount,
+            (int)$settings['decimals'],
+            $decimalSep,
+            $thousandSep
+        );
+
+        $position = $settings['symbol_position'];
+        if (!$position) {
+            $position = humanMoneySymbolPosition($currency);
+        }
+
+        $space = $settings['space'];
+        if ($space === null) {
+            $space = ($position === 'after') ? ' ' : '';
+        }
+
+        if ($position === 'before') {
+            $formatted = $symbol . $space . $number;
+        } else {
+            $formatted = $number . $space . $symbol;
+        }
+    }
+
+    if (!empty($settings['html'])) {
+        return htmlspecialchars($formatted, ENT_QUOTES, 'UTF-8');
+    }
+
+    return $formatted;
+}
+
+function humanMoneyLocaleFromCurrency($currency)
+{
+    $map = array(
+        'USD' => 'en_US',
+        'EUR' => 'de_DE',
+        'GBP' => 'en_GB',
+        'THB' => 'th_TH',
+        'JPY' => 'ja_JP',
+        'CNY' => 'zh_CN',
+        'HKD' => 'zh_HK',
+        'SGD' => 'en_SG',
+        'AUD' => 'en_AU',
+        'CAD' => 'en_CA',
+        'CHF' => 'de_CH',
+        'NOK' => 'nb_NO'
+    );
+
+    return isset($map[$currency]) ? $map[$currency] : 'en_US';
+}
+
+function humanMoneySymbol($currency)
+{
+    $map = array(
+        'USD' => '$',
+        'EUR' => '€',
+        'GBP' => '£',
+        'THB' => '฿',
+        'JPY' => '¥',
+        'CNY' => '¥',
+        'HKD' => 'HK$',
+        'SGD' => 'S$',
+        'AUD' => 'A$',
+        'CAD' => 'C$',
+        'CHF' => 'CHF',
+        'NOK' => 'kr'
+    );
+
+    return isset($map[$currency]) ? $map[$currency] : $currency;
+}
+
+function humanMoneyDecimalSep($locale)
+{
+    return in_array($locale, array('de_DE', 'fr_FR', 'es_ES', 'it_IT', 'nl_NL', 'nb_NO')) ? ',' : '.';
+}
+
+function humanMoneyThousandSep($locale)
+{
+    if (in_array($locale, array('es_ES'))) {
+        return '.';
+    }
+
+    if (in_array($locale, array('de_DE', 'it_IT', 'nl_NL','nb_NO'))) {
+	    return ' ';
+	}
+	
+	return '';
+}
+
+function humanMoneySymbolPosition($currency)
+{
+    return in_array($currency, array('EUR', 'CHF','NOK')) ? 'after' : 'before';
+}
 
 function HumanAgo(int $timestamp, array $p = []) {
 	
