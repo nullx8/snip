@@ -1,7 +1,7 @@
 <?php
 //
 // DO NOT CALL THIS FILE DIRECTLY!
-// use ../../Math/fxrate.inc.php
+// use ../../Ext/fxrate.inc.php
 // and call fxRate($from,$to, $round = null);
 
 
