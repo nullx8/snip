@@ -23,8 +23,10 @@ class Db {
     public function connect() {    
         // Try and connect to the database
         if(!isset(self::$connection)) {
-            // Load configuration as an array. Use the actual location of your configuration file
-            self::$connection = new mysqli(DB_HOST, DB_USER, DB_PWD, DB_DB);
+            $conn = mysqli_init();
+            mysqli_options($conn, MYSQLI_OPT_CONNECT_TIMEOUT, 3);
+            @mysqli_real_connect($conn, DB_HOST, DB_USER, DB_PWD, DB_DB);
+            self::$connection = $conn;
 
 			// set to utf8
 			mysqli_set_charset( self::$connection, DB_CHARSET);
